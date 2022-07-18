@@ -5,124 +5,88 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script type="text/javascript" src="./js/jquery.js"></script>
-<script type="text/javascript">
+</head>
+<script src="./js/jquery.js"></script>
+<script>
 	$(document).ready(function(){
 		//alert(1);
-		var duplication = false;
-		$('input[id="check"]').click(function(){
+		var flag = false;
+		$('input[id=dupl]').click(function(){
 			//alert(2);
-			if($('input[name="id"]').val()==""){
-				alert('아이디를 입력하세요');
-				$('input[name="id"]').focus();
+			if($('input[name=id]').val()==""){
+				alert("아이디를 입력하세요");
+				$('input[name=id]').focus();
 				return;
-			}else{
-				var userid = $('input[name="id"]').val();
+			}
+			else{
+				var userid = $('input[name=id]').val();
 				$.ajax({
-					url : "idcheckProc.jsp",
-					data:{userid:userid},
-					success : function(data){
-						//alert(data);
+					url: "idcheck.jsp" ,
+					data: {userid : userid},
+					success: function(data){
 						if($.trim(data)=="Y"){
-							//alert('사용할 수 있는 아이디');
-							$('#idmsg').css('color','blue');
-							$('#idmsg').html("사용 가능한 아이디");
-							duplication = true;
+							//alert("사용가능한 아이디 입니다.");							
+							$('#msg').css('color','blue');
+							$('#msg').html('사용가능한 아이디 입니다.');
+							flag = true;
+							
 						}else{
-							//alert('이미 사용되고 있는 아이디');
-							$('#idmsg').css('color','red');
-							$('#idmsg').html("사용 불가능한 아이디");
-							duplication = false;
+							//alert("이미 존재하는 아이디 입니다.");
+							$('#msg').css('color','red');
+							$('#msg').html('이미 존재하는 아이디 입니다.');
+							flag = false;
 						}
 					}
+					
+					
 				});//ajax
 			}
-		});//idcheck
+		});//dupl
 		$('#sub').click(function(){
-			if(duplication == false){
-				alert('아이디 중복확인 누락');
+			if(flag == false){
+				alert('중복확인 먼저 하세요');
 				return false;
 			}
 		});
 		
 	});
+
 </script>
-</head>
 <body>
-<h2>영화 선호도 조사 </h2>
-	<form action="insertProc.jsp" method="post" name="myform">
-		<table border="1" width="700px">
-		<tr>
-			<td>아이디</td>
-			<td>
-				<input type="text" name="id" value="IU">
-				<input type="button" value="중복확인" onclick="idcheck()" id="check">
-				<span id="idmsg"></span>
-			</td>  
-		</tr>
-		<tr>
-			<td>이름</td>
-			<td><input type="text" name="name" value="아이유"></td>
-			
-		</tr> 
-		<tr>
-			<td>나이</td>
-			<td><input type="text" name="age" value="23"></td> 
-		</tr>
-		<tr>
-			<td>좋아하는 장르</td>
-			<td>
-				<input type="checkbox" name="genre" value="공포">공포
-				<input type="checkbox" name="genre" value="다큐">다큐 
-				<input type="checkbox" name="genre" value="액션">액션 
-				<input type="checkbox" name="genre" value="애니메이션">애니메이션
-			</td> 
-			
-		</tr>
+<h3>회원가입</h3>
+<form action="insertProc.jsp" method="post" name="myform">
 
-		<tr>
-			<td>즐겨보는 시간대</td>
-			<td>
-				<select name="time">
-					<!-- <option value="08~10">08~10</option>
-					<option value="10~12">10~12</option>
-					<option value="12~14">12~14</option>
-					<option value="14~16">14~16</option>
-					<option value="16~18">16~18</option>
-					<option value="18~20">18~20</option> -->
-					
-					<%for(int i=8;i<20;i=i+2){
-					%>
-					<option value="<%=i %>~<%=i+2%>"><%=i %>~<%=i+2 %></option>
-					<% }%>
-				</select>
-			</td> 
-		</tr>
-		
-		<tr>
-			<td>동반 관객수</td>
-			<td> 
-				 <input type="radio" name="partner" value="1">1
-				<input type="radio" name="partner" value="2">2 
-				<input type="radio" name="partner" value="3">3 
-				<input type="radio" name="partner" value="4">4 <br><br>
+<label>id : </label>
+<input type="text" size="20" name="id">
+<input type="button" value="중복확인" id="dupl"><span id="msg"></span>
+<br>
+<label>pw : </label>
+<input type="password" size="20" name="pw"><br>
+<label>name : </label>
+<input type="text" size="20" name="name"><br>
+<label>nickname : </label>
+<input type="text" size="20" name="nickname"><br>
+<label>생년 : </label>
+<select name="year">
+<%for(int i=2022;i>=1922;i--){%>
+	<option value="<%=i%>"> <%=i %></option>
+	
+<%} %>
+</select>
+<label>월 : </label>
+<select>
+<%for(int i=1;i<13;i++){%>
+<option value="<%=i%>"><%=i %></option>
+<%}%>
+</select>
+<label>일 : </label>
+<select>
+<%for(int i=1;i<=31;i++){%>
+<option value="<%=i%>"><%=i%></option>
+<%} %>
+</select><br>
 
-			</td>
-		</tr>
-		
-		<tr>
-			<td>영화관 개선사항</td>
-			<td>
-				<textarea name="memo" cols="40" rows="3">value는 여기에 넣기</textarea> 
-			</td>
-		</tr>
-		<tr align="center">
-			<td colspan="2">
-				<input type="submit" value="가입하기" id="sub" onclick="return checking()">
-			</td>
-		</tr>
-		</table>
-	</form>
-
+<input type="submit" value="가입" id="sub" onclick="return check()">
+</form>
 </body>
 </html>
