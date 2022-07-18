@@ -1,95 +1,91 @@
-<%@page import="mypkg.StudentBean"%>
+<%@page import="mypkg.MovieBean"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+updateForm.jsp<br>
+
 <%
 request.setCharacterEncoding("UTF-8");
-int num = Integer.parseInt(request.getParameter("num")); 
+int num = Integer.parseInt(request.getParameter("num"));
+System.out.println("num:"+num);
 %>
-
-<jsp:useBean id="sdao" class="mypkg.StudentDao"/>
-
-<%StudentBean sb = sdao.getStuByNum(num); 
-System.out.println(sb.getNum());
+<jsp:useBean id="mdao" class="mypkg.MovieDao"/>
+<%MovieBean mb = mdao.getMovieByNum(num);
+System.out.println("id:"+mb.getId());
 %>
-
 
 <body>
-	<h2>회원수정 insertForm.jsp</h2>
-	<form action="updateProc.jsp" method="post">
-		<input type="hidden" name="num" value="<%=sb.getNum()%>"><br>
-		아이디 : <input type="text" name="id" value="<%=sb.getId()%>"><br><br>  
-		비밀번호 :
-		<input type="password" name="passwd" value="<%=sb.getPasswd()%>"><br><br>  
-		이름
-		: <input type="text" name="name" value="<%=sb.getName()%>"><br><br>  
-		생년월일 :
-		<select name="year">
-			<!-- <option value="2013">2013</option>
-			<option value="2012">2012</option>
-			<option value="2011">2011</option>
-			<option value="2010">2010</option>
-			<option value="2009">2009</option>
-			<option value="2008">2008</option>  -->
+<h2>수정 </h2>
+	<form action="updateProc.jsp" method="post" name="myform">
+		<table border="1" width="700px">
+		<tr>
+		<input type="hidden" name="num" value="<%=mb.getNum()%>">
+			<td>아이디</td>
+			<td>
+				<input type="text" name="id" value="<%=mb.getId()%>">
+			</td>  
+		</tr>
+		<tr>
+			<td>이름</td>
+			<td><input type="text" name="name" value="<%=mb.getName()%>"></td> 
+		</tr> 
+		<tr>
+			<td>나이</td>
+			<td><input type="text" name="age" value="<%=mb.getAge()%>"></td> 
+		</tr>
+		<tr>
+			<td>좋아하는 장르</td>
+			<td>
+				
+				<input type="checkbox" name="genre" value="공포" <%if(mb.getGenre().contains("공포")){ %> checked <%} %>>공포
+				<input type="checkbox" name="genre" value="다큐" <%if(mb.getGenre().contains("다큐")){ %> checked <%} %>>다큐
+				<input type="checkbox" name="genre" value="액션" <%if(mb.getGenre().contains("액션")){ %> checked <%} %>>액션 
+				<input type="checkbox" name="genre" value="애니메이션" <%if(mb.getGenre().contains("애니메이션")){ %> checked <%} %>>애니메이션
+			</td> 
 			
-			<%
-				for(int i=2022;i>=1930; i--){
-			%>					
-					<option value="<%=i%>" <%if(sb.getYear() == i){ %> selected <%} %>><%=i%></option>
-			<%					
-				}//for
-			%>
-			
-		</select> 년 
-		
-		<select name="month">
-			<!-- <option value="1">1</option>
-			<option value="2">2</option>
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-			<option value="6">6</option> -->
-			<%
-				//1월 ~ 12월
-				for(int i=1; i<=12; i++) {
-			%>
-					<option value="<%=i%>" <%if(sb.getMonth() == i){ %> selected <%} %>><%=i%></option>
-			<%
-				}
-			%>
-		</select> 월
-		
-		<select name="day">
-               <!--  <option value = "1">1</option>
-                <option value = "2">2</option>
-                <option value = "3">3</option>
-                <option value = "4">4</option>
-                <option value = "5">5</option>  
-                <option value = "6">6</option> -->
-              <%
-				for(int i=1; i<=31; i++){
-				%>
-					<option value="<%=i%>" <%if(sb.getDay() == i){ %> selected <%} %>><%=i%></option>
-				<%
-				}//for()
-				%>
-                
-            </select> 일 <br>
+		</tr>
 
-		<br> 취미 : 
+		<tr>
+			<td>즐겨보는 시간대</td>
+			<td>
+				<select name="time">
+					<!-- <option value="08~10">08~10</option>
+					<option value="10~12">10~12</option>
+					<option value="12~14">12~14</option>
+					<option value="14~16">14~16</option>
+					<option value="16~18">16~18</option>
+					<option value="18~20">18~20</option> -->
+					
+					<%for(int i=8;i<20;i=i+2){
+					%>
+					<option value="<%=i %>~<%=i+2%>" <%if(mb.getTime().equals(i+"~"+(i+2))){%>selected <%} %>><%=i %>~<%=i+2%></option>
+					<% }%>
+				</select>
+			</td> 
+		</tr>
 		
+		<tr>
+			<td>동반 관객수</td>
+			<td> 
+				 <input type="radio" name="partner" value="1" <%if(mb.getPartner()==1){ %> checked <% }%>>1
+				<input type="radio" name="partner" value="2" <%if(mb.getPartner()==2){ %> checked <% }%>>2 
+				<input type="radio" name="partner" value="3" <%if(mb.getPartner()==3){ %> checked <% }%>>3 
+				<input type="radio" name="partner" value="4" <%if(mb.getPartner()==4){ %> checked <% }%>>4 <br><br>
+
+			</td>
+		</tr>
 		
-		<input type="checkbox" name="hobby" value="달리기" <%if(sb.getHobby().contains("달리기")){ %> checked <%} %>>달리기
-		<input type="checkbox" name="hobby" value="수영" <%if(sb.getHobby().contains("수영")) { %> checked <%} %>>수영 
-		<input type="checkbox" name="hobby" value="게임" <%if(sb.getHobby().contains("게임")) { %> checked <%} %>>게임 
-		<input type="checkbox" name="hobby" value="영화" <%if(sb.getHobby().contains("영화")) { %> checked <%} %>>영화<br> <br><br>
-		
-		
-		[점수입력]<br> 
-		C언어 : 	<input type="text" name="c" size="10" value="<%=sb.getC()%>">
-		JAVA : <input type="text" name="java" size="10" value="<%=sb.getJava()%>">
-		JSP : <input type="text" name="jsp" size="10" value="<%=sb.getJsp()%>"><br><br>  
-		<input type="submit" value="수정하기">
+		<tr>
+			<td>영화관 개선사항</td>
+			<td>
+				<textarea name="memo" cols="40" rows="3" >value는 여기에 넣기</textarea> 
+			</td>
+		</tr>
+		<tr align="center">
+			<td colspan="2">
+				<input type="submit" value="수정하기" id="sub">
+			</td>
+		</tr>
+		</table>
 	</form>
 
 </body>

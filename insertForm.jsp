@@ -1,134 +1,128 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html> 
-<head> 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
 <title>Insert title here</title>
-<script type="text/javascript" src="./js/jquery.js">></script>
+<script type="text/javascript" src="./js/jquery.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		//alert(1);
-		var flag = false;
-		$('#id_check').click(function(){ 
+		var duplication = false;
+		$('input[id="check"]').click(function(){
 			//alert(2);
 			if($('input[name="id"]').val()==""){
 				alert('아이디를 입력하세요');
-				'input[name="id"]'.val().focus();
+				$('input[name="id"]').focus();
 				return;
-			}
-			else{
+			}else{
 				var userid = $('input[name="id"]').val();
 				$.ajax({
-					url : "id_check_proc.jsp",
-					type:'post',
-					data : {userid:userid},
+					url : "idcheckProc.jsp",
+					data:{userid:userid},
 					success : function(data){
-						if($.trim(data)=='YES'){ //trim...빼먹지말자. 한시간 반 날렸다.
-			                $('#idmessage').html("사용할 수 있는 아이디입니다.");
-							$('#idmessage').css('color','blue');
-							flag = true;
+						//alert(data);
+						if($.trim(data)=="Y"){
+							//alert('사용할 수 있는 아이디');
+							$('#idmsg').css('color','blue');
+							$('#idmsg').html("사용 가능한 아이디");
+							duplication = true;
 						}else{
-							$('#idmessage').css('color','red');
-			                $('#idmessage').html("사용할 수 없는 아이디입니다.");
-							flag = false;
+							//alert('이미 사용되고 있는 아이디');
+							$('#idmsg').css('color','red');
+							$('#idmsg').html("사용 불가능한 아이디");
+							duplication = false;
 						}
 					}
-					
-				});//ajax	
+				});//ajax
 			}
-			
-		});//id_check
+		});//idcheck
 		$('#sub').click(function(){
-			//alert(3);
-			if(flag == false){
-				alert('아이디 중복체크 먼저 하세요');
+			if(duplication == false){
+				alert('아이디 중복확인 누락');
 				return false;
 			}
 		});
-	});//ready
-
+		
+	});
 </script>
-
 </head>
 <body>
-	<h2>회원가입 insertForm.jsp</h2>
-	<form action="inputProc.jsp" method="post">
-		아이디 : <input type="text" name="id" value="IU">
-				<input type="button" value="중복체크" id="id_check">
-				<span id="idmessage"></span>
-				<br><br>  
-		비밀번호 :
-		<input type="password" name="passwd" value="1234"><br><br>  
-		이름 
-		: <input type="text" name="name" value="아이유"><br><br>  
-		생년월일 :
-		<select name="year">
-			<!-- <option value="2013">2013</option>
-			<option value="2012">2012</option>
-			<option value="2011">2011</option>
-			<option value="2010">2010</option>
-			<option value="2009">2009</option>
-			<option value="2008">2008</option>  -->
+<h2>영화 선호도 조사 </h2>
+	<form action="insertProc.jsp" method="post" name="myform">
+		<table border="1" width="700px">
+		<tr>
+			<td>아이디</td>
+			<td>
+				<input type="text" name="id" value="IU">
+				<input type="button" value="중복확인" onclick="idcheck()" id="check">
+				<span id="idmsg"></span>
+			</td>  
+		</tr>
+		<tr>
+			<td>이름</td>
+			<td><input type="text" name="name" value="아이유"></td>
 			
-			<%
-				for(int i=2022;i>=1930; i--){
-			%>					
-					<option value="<%=i%>"><%=i%></option>
-			<%					
-				}//for
-			%>
+		</tr> 
+		<tr>
+			<td>나이</td>
+			<td><input type="text" name="age" value="23"></td> 
+		</tr>
+		<tr>
+			<td>좋아하는 장르</td>
+			<td>
+				<input type="checkbox" name="genre" value="공포">공포
+				<input type="checkbox" name="genre" value="다큐">다큐 
+				<input type="checkbox" name="genre" value="액션">액션 
+				<input type="checkbox" name="genre" value="애니메이션">애니메이션
+			</td> 
 			
-		</select> 년 
-		
-		<select name="month">
-			<!-- <option value="1">1</option>
-			<option value="2">2</option>
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-			<option value="6">6</option> -->
-			<%
-				//1월 ~ 12월
-				for(int i=1; i<=12; i++) {
-			%>
-					<option value="<%=i %>"><%=i %></option>
-			<%
-				}
-			%>
-		</select> 월
-		
-		<select name="day">
-               <!--  <option value = "1">1</option>
-                <option value = "2">2</option>
-                <option value = "3">3</option>
-                <option value = "4">4</option>
-                <option value = "5">5</option>  
-                <option value = "6">6</option> -->
-              	<%
-				for(int i=1; i<=31; i++){
-				%>
-					<option value="<%=i%>"><%=i%></option>
-				<%
-				}//for()
-				%>
-                
-                
-        </select> 일 <br>
+		</tr>
 
-		<br> 취미 : 
-		<input type="checkbox" name="hobby" value="달리기">달리기
-		<input type="checkbox" name="hobby" value="수영">수영 
-		<input type="checkbox" name="hobby" value="게임">게임 
-		<input type="checkbox" name="hobby" value="영화">영화<br> <br><br> 
+		<tr>
+			<td>즐겨보는 시간대</td>
+			<td>
+				<select name="time">
+					<!-- <option value="08~10">08~10</option>
+					<option value="10~12">10~12</option>
+					<option value="12~14">12~14</option>
+					<option value="14~16">14~16</option>
+					<option value="16~18">16~18</option>
+					<option value="18~20">18~20</option> -->
+					
+					<%for(int i=8;i<20;i=i+2){
+					%>
+					<option value="<%=i %>~<%=i+2%>"><%=i %>~<%=i+2 %></option>
+					<% }%>
+				</select>
+			</td> 
+		</tr>
+		
+		<tr>
+			<td>동반 관객수</td>
+			<td> 
+				 <input type="radio" name="partner" value="1">1
+				<input type="radio" name="partner" value="2">2 
+				<input type="radio" name="partner" value="3">3 
+				<input type="radio" name="partner" value="4">4 <br><br>
 
-		[점수입력]<br> 
-		C언어 : 	<input type="text" name="c" size="10">
-		JAVA : <input type="text" name="java" size="10">
-		JSP : <input type="text" name="jsp" size="10"><br><br>  
-		<input type="submit" value="가입하기" id="sub" onclick="return checkIn()">
+			</td>
+		</tr>
+		
+		<tr>
+			<td>영화관 개선사항</td>
+			<td>
+				<textarea name="memo" cols="40" rows="3">value는 여기에 넣기</textarea> 
+			</td>
+		</tr>
+		<tr align="center">
+			<td colspan="2">
+				<input type="submit" value="가입하기" id="sub" onclick="return checking()">
+			</td>
+		</tr>
+		</table>
 	</form>
 
-</body> 
+</body>
 </html>
-
